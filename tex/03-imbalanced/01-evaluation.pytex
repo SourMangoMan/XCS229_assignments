@@ -39,6 +39,11 @@ We define the balanced accuracy as
 With these notations, we can verify that the accuracy is equal to $
 A =\frac{TP+TN}{TP+TN + FP+FN} $. 
 
+🐍
+import re
+with open('submission.tex') as f: print((re.search(r'% <SCPD_SUBMISSION_TAG>_3ai(.*?)% <SCPD_SUBMISSION_TAG>_3ai', f.read(), re.DOTALL)).group(1))
+🐍
+
 (ii) \points{3aii} Show that 
 \begin{align*}
 \rho = \frac{TP + FN}{TP+TN + FP+FN}
@@ -52,6 +57,16 @@ A = \rho \cdot A_1 + (1-\rho)A_0
 
 Comparing equation \eqref{eq:A_bar} and \eqref{eq:A}, we can see that the accuracy and balanced accuracy are both linear combination of $A_0$ and $A_1$ but with different weighting. 
 
+🐍
+import re
+with open('submission.tex') as f: print((re.search(r'% <SCPD_SUBMISSION_TAG>_3aii(.*?)% <SCPD_SUBMISSION_TAG>_3aii', f.read(), re.DOTALL)).group(1))
+🐍
+
 (iii) \points{3aiii} Show that the trivial classifier you constructed for part (i) has balanced accuracy 50\%. 
 
 Partly because of (iii), the balanced accuracy $\overline{A}$ is often a preferable evaluation metric than the accuracy $A$. Sometimes people also report the accuracies for the two classes ($A_0$ and $A_1$) to demonstrate the performance for each class. 
+
+🐍
+import re
+with open('submission.tex') as f: print((re.search(r'% <SCPD_SUBMISSION_TAG>_3aiii(.*?)% <SCPD_SUBMISSION_TAG>_3aiii', f.read(), re.DOTALL)).group(1))
+🐍

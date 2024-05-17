@@ -12,3 +12,8 @@ The log-likelihood of the data is
     &=& \log \prod_{i=1}^\nexp p(x^{(i)} \vert  y^{(i)}; \mu_{0}, \mu_1, \Sigma) p(y^{(i)}; \phi).
 \end{eqnarray*}
 By maximizing $\ell$ with respect to the four parameters, prove that the maximum likelihood estimates of $\phi$, $\mu_{0}, \mu_1$, and $\Sigma$ are indeed as given in the formulas above.  (You may assume that there is at least one positive and one negative example, so that the denominators in the definitions of $\mu_{0}$ and $\mu_1$ above are non-zero.)
+
+🐍
+import re
+with open('submission.tex') as f: print((re.search(r'% <SCPD_SUBMISSION_TAG>_1d(.*?)% <SCPD_SUBMISSION_TAG>_1d', f.read(), re.DOTALL)).group(1))
+🐍
