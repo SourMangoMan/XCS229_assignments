@@ -18,4 +18,7 @@ where $w^{(i)} = 1$ if $y^{(i)} =0$ and $w^{(i)} = 1/\kappa$ if $y^{(i)} = 1$.
 
 Observe effectively we are re-weighting the loss function for each example by some constant that depends on the frequency of the class it belongs to.
 
-
+🐍
+import re
+with open('submission.tex') as f: print((re.search(r'% <SCPD_SUBMISSION_TAG>_3c(.*?)% <SCPD_SUBMISSION_TAG>_3c', f.read(), re.DOTALL)).group(1))
+🐍

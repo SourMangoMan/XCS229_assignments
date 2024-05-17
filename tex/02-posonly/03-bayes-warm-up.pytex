@@ -9,3 +9,7 @@ p(t^{(i)}=1\mid y^{(i)} = 1, x^{(i)}) = 1
 \end{align}
 That is, observing a positive partial label $y^{(i)}=1$ tells us for sure the hidden true label is 1. Use Bayes rule to derive this (an informal explanation will not earn credit).
 
+🐍
+import re
+with open('submission.tex') as f: print((re.search(r'% <SCPD_SUBMISSION_TAG>_2c(.*?)% <SCPD_SUBMISSION_TAG>_2c', f.read(), re.DOTALL)).group(1))
+🐍

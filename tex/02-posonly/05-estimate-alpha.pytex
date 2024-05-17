@@ -22,3 +22,7 @@ Then we use
 \end{equation*}
 to estimate $\alpha$. (You will be asked to implement this algorithm in the next sub-question. For this sub-question, you only need to show equation~\eqref{eqn:1}. Moreover, this sub-question may be slightly harder than other sub-questions.)
 
+🐍
+import re
+with open('submission.tex') as f: print((re.search(r'% <SCPD_SUBMISSION_TAG>_2e(.*?)% <SCPD_SUBMISSION_TAG>_2e', f.read(), re.DOTALL)).group(1))
+🐍
