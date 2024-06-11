@@ -32,37 +32,42 @@ class LogisticRegression:
             y: Training example labels. Shape (n_examples,).
         """
         # *** START CODE HERE ***
-        x = np.array(x)
-        y = np.array(y)
-        if self.theta == None:
-            self.theta = np.zeros(x.shape[1])
+        def l1_norm(a,b = None):
+            if b == None:
+                b = np.zeros(len(a))
+
+            sum = 0
+            for i in range(len(a)):
+                sum += np.abs(a[i] - b[i])
+
+            return sum
+
         n = x.shape[0]
 
-        for j in range(self.max_iter):
-            prev_theta = self.theta.copy()
-            grad_l = np.zeros(x.shape[1])
-            H = np.zeros((x.shape[1], x.shape[1]))
-            
+        x = np.array(x)
+        y = np.array(y)
+
+        self.theta, grad_l = np.zeros((x.shape[1], 1))
+        
+        H = np.zeros((x.shape[1], x.shape[1]))
+        
+        for i in range(self.max_iter):
+            prev_theta = (self.theta).copy()
             for i in range(n):
-                xi = x[i, :].reshape((-1, 1))
-                g  = 1/(1 + np.exp(-np.dot(self.theta.T, xi)))
-                grad_l = grad_l + (y[i] - g) * xi
-                H = H + g * (1 - g) * np.dot(xi, xi.T)
+                x_i = (x[i,:]).reshape(-1,1)
 
-            grad_l /= -n
+                g = 1/(1 + np.exp(self.theta.T @ x_i))
+                grad_l += (g - y[i])*x_i
+                H += g*(1 - g)*(x_i @ x_i.T)
+
+            grad_l /= n
             H /= n
-            
-            self.theta = self.theta - np.dot(np.linalg.inv(H), grad_l)
-            if np.linalg.norm(self.theta - prev_theta) < self.eps:
+
+            self.theta -= np.linalg.inv(H) @ grad_l
+
+            if l1_norm(self.theta, prev_theta) < self.eps:
                 break
-            
-            
 
-
-        # newton : theta = theta - f/f'
-        # g  = 1/(1+np.exp(np.dot(theta.T,x[i,:])))
-        # f  = (-1/n)*sum((y[i] - g)*x[i,:])
-        # f' = (1/n)*sum(g*(1-g)*x[i,:]*x[i,:].T)
         # *** END CODE HERE ***
 
     def predict(self, x):
@@ -75,7 +80,4 @@ class LogisticRegression:
             Outputs of shape (n_examples,).
         """
         # *** START CODE HERE ***
-        x = np.array(x)
-        return 1/(1 + np.exp(-np.dot(self.theta.T, x)))
-
         # *** END CODE HERE ***
