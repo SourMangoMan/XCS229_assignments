@@ -33,7 +33,7 @@ class LogisticRegression:
         """
         # *** START CODE HERE ***
         def l1_norm(a,b = None):
-            if b == None:
+            if b.any() == None:
                 b = np.zeros(len(a))
 
             sum = 0
@@ -47,7 +47,8 @@ class LogisticRegression:
         x = np.array(x)
         y = np.array(y)
 
-        self.theta, grad_l = np.zeros((x.shape[1], 1))
+        self.theta = np.zeros((x.shape[1], 1))
+        grad_l = np.zeros((x.shape[1], 1))
         
         H = np.zeros((x.shape[1], x.shape[1]))
         
@@ -56,7 +57,7 @@ class LogisticRegression:
             for i in range(n):
                 x_i = (x[i,:]).reshape(-1,1)
 
-                g = 1/(1 + np.exp(self.theta.T @ x_i))
+                g = 1/(1 + np.exp(-(self.theta.T @ x_i)))
                 grad_l += (g - y[i])*x_i
                 H += g*(1 - g)*(x_i @ x_i.T)
 
@@ -80,4 +81,7 @@ class LogisticRegression:
             Outputs of shape (n_examples,).
         """
         # *** START CODE HERE ***
+        x = np.array(x)
+        g = 1/(1 + np.exp(-self.theta.T @ x.T))
+        return g
         # *** END CODE HERE ***
