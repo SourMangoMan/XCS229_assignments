@@ -60,6 +60,24 @@ def fully_observed_predictions(train_path, test_path, output_path_true, plot_pat
     # Problem (2a): Train and test on true labels (t)
     # Make sure to save predicted probabilities to output_path_true using np.savetxt()
     # *** START CODE HERE ***
+    training_data = np.genfromtxt(train_path, delimiter=',', skip_header=1)
+    testing_data = np.genfromtxt(test_path, delimiter=',', skip_header=1)
+    t = np.array(training_data[:, 0])
+    x = np.array(training_data[:, [1,2]])
+    x_test = np.array(testing_data[:, [1,2]])
+    y = np.array(training_data[:, 3])
+    # x = np.hstack((np.ones((x.shape[0], 1)), x))
+    # y = np.array(training_data[:, 3])
+
+
+    clf = LogisticRegression()
+    clf.fit(x, t)
+    full_predictions = clf.predict(x_test)
+
+    np.savetxt(output_path_true, full_predictions, delimiter=',')
+
+    
+
     # *** END CODE HERE ***
     return full_predictions
 
@@ -81,6 +99,21 @@ def naive_partial_labels_predictions(train_path, test_path, output_path_naive, p
     # Problem (2b): Train on y-labels and test on true labels
     # Make sure to save predicted probabilities to output_path_naive using np.savetxt()
     # *** START CODE HERE ***
+    training_data = np.genfromtxt(train_path, delimiter=',', skip_header=1)
+    testing_data = np.genfromtxt(test_path, delimiter=',', skip_header=1)
+    t = np.array(training_data[:, 0])
+    x = np.array(training_data[:, [1,2]])
+    x_test = np.array(testing_data[:, [1,2]])
+    y = np.array(training_data[:, 3])
+    # x = np.hstack((np.ones((x.shape[0], 1)), x))
+    # y = np.array(training_data[:, 3])
+
+
+    clf = LogisticRegression()
+    clf.fit(x, y)
+    naive_predictions = clf.predict(x_test)
+    clf = clf.theta
+    
     # *** END CODE HERE ***
     return naive_predictions, clf
 
