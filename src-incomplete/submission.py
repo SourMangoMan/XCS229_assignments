@@ -145,7 +145,43 @@ def find_alpha_and_plot_correction(clf, valid_path, test_path, output_path_adjus
     validation_data = np.genfromtxt(valid_path, delimiter=',', skip_header=1)
     testing_data = np.genfromtxt(test_path, delimiter=',', skip_header=1)
 
+    x = np.array(validation_data[:, 1:3])
+    x_intercept = np.hstack((np.ones((x.shape[0], 1)), x))
+
+    x_test = np.array(testing_data[:, 1:3])
+    x_test_intercept = np.hstack((np.ones((x_test.shape[0], 1)), x_test))
+
+    y = np.array(validation_data[:, 3])
+    t_test = np.array(testing_data[:, 0])
+
+    # v_plus = x_intercept[y == 1, :]
+    # print(v_plus)
+    # print(x_intercept[validation_data[:,0] == 1, :])
+    clf2 = LogisticRegression()
+    clf2.fit(x_intercept, y)
+    naive_predictions = clf2.predict(x_intercept)
+    positive_naive_predictions = naive_predictions[y == 1]
+
+    sum_positive = sum(positive_naive_predictions)
+    alpha = sum_positive/len(positive_naive_predictions)
+
+    adjusted_predictions = clf2.predict(x_test_intercept)/alpha
+
+    # Y = -np.log((1/adjusted_predictions) - np.ones(adjusted_predictions.shape[0]))
+    # print(adjusted_predictions)
+    # print(1/adjusted_predictions)
+    # print((1/adjusted_predictions) - np.ones(len(adjusted_predictions)))
     
+    # adjusted_theta = np.linalg.inv(x_test_intercept.T @ x_test_intercept) @ x_test_intercept.T @ Y
+    # print(adjusted_theta)
+
+    adjusted_predictions_01 = np.zeros(len(adjusted_predictions))
+    adjusted_predictions_01[adjusted_predictions>0.5]  = 1
+    adjusted_predictions_01[adjusted_predictions<=0.5] = 0
+
+    np.savetxt(output_path_adjusted, adjusted_predictions, delimiter=',')
+    util.plot_posonly(x_test_intercept, adjusted_predictions_01, [30, 1, 1], plot_path_adjusted)
+
     # *** END CODE HERE ***
     return alpha
 
