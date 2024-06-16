@@ -42,15 +42,16 @@ class LogisticRegression:
 
             return sum
 
-        n = x.shape[0]
+        n, dim = x.shape
 
         x = np.array(x)
         y = np.array(y)
 
-        self.theta = np.zeros((x.shape[1], 1))
-        grad_l = np.zeros((x.shape[1], 1))
+        if self.theta is None:
+            self.theta = np.zeros((dim, 1))
+        grad_l = np.zeros((dim, 1))
         
-        H = np.zeros((x.shape[1], x.shape[1]))
+        H = np.zeros((dim, dim))
         
         for i in range(self.max_iter):
             prev_theta = (self.theta).copy()
@@ -66,9 +67,14 @@ class LogisticRegression:
 
             self.theta -= np.linalg.inv(H) @ grad_l
 
+            if self.verbose and i % 100 == 0:
+                loss = -np.mean(y * np.log(g) + (1 - y) * np.log(1 - g))
+                print(f"Iteration {i}: Loss {loss}")
+
+
             if l1_norm(self.theta, prev_theta) < self.eps:
                 break
-
+        
         # *** END CODE HERE ***
 
     def predict(self, x):
@@ -83,5 +89,5 @@ class LogisticRegression:
         # *** START CODE HERE ***
         x = np.array(x)
         g = 1/(1 + np.exp(-self.theta.T @ x.T))
-        return g
+        return g.flatten()
         # *** END CODE HERE ***

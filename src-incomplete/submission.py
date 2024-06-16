@@ -62,21 +62,22 @@ def fully_observed_predictions(train_path, test_path, output_path_true, plot_pat
     # *** START CODE HERE ***
     training_data = np.genfromtxt(train_path, delimiter=',', skip_header=1)
     testing_data = np.genfromtxt(test_path, delimiter=',', skip_header=1)
-    t = np.array(training_data[:, 0])
-    x = np.array(training_data[:, [1,2]])
-    x_test = np.array(testing_data[:, [1,2]])
-    y = np.array(training_data[:, 3])
-    # x = np.hstack((np.ones((x.shape[0], 1)), x))
-    # y = np.array(training_data[:, 3])
 
+    t = training_data[:, 0]
+    t_test = testing_data[:, 0]
+
+    x = training_data[:, 1:3]
+    x_intercept = np.hstack((np.ones((x.shape[0], 1)), x))
+
+    x_test = testing_data[:, 1:3]
+    x_test_intercept = np.hstack((np.ones((x_test.shape[0], 1)), x_test))
 
     clf = LogisticRegression()
-    clf.fit(x, t)
-    full_predictions = clf.predict(x_test)
+    clf.fit(x_intercept, t)
+    full_predictions = clf.predict(x_test_intercept)
 
-    np.savetxt(output_path_true, full_predictions, delimiter=',')
-
-    
+    np.savetxt(output_path_true, full_predictions, delimiter=',') 
+    util.plot_posonly(x_test_intercept, t_test, clf.theta, plot_path_true)
 
     # *** END CODE HERE ***
     return full_predictions
@@ -101,19 +102,25 @@ def naive_partial_labels_predictions(train_path, test_path, output_path_naive, p
     # *** START CODE HERE ***
     training_data = np.genfromtxt(train_path, delimiter=',', skip_header=1)
     testing_data = np.genfromtxt(test_path, delimiter=',', skip_header=1)
-    t = np.array(training_data[:, 0])
-    x = np.array(training_data[:, [1,2]])
-    x_test = np.array(testing_data[:, [1,2]])
-    y = np.array(training_data[:, 3])
-    # x = np.hstack((np.ones((x.shape[0], 1)), x))
-    # y = np.array(training_data[:, 3])
-
-
-    clf = LogisticRegression()
-    clf.fit(x, y)
-    naive_predictions = clf.predict(x_test)
-    clf = clf.theta
     
+    x = np.array(training_data[:, 1:3])
+    x_intercept = np.hstack((np.ones((x.shape[0], 1)), x))
+
+    x_test = np.array(testing_data[:, 1:3])
+    x_test_intercept = np.hstack((np.ones((x_test.shape[0], 1)), x_test))
+
+    y = np.array(training_data[:, 3])  
+    t_test = np.array(testing_data[:, 0])
+
+
+    clf2 = LogisticRegression()
+    clf2.fit(x_intercept, y)
+
+    naive_predictions = clf2.predict(x_test_intercept)
+    clf = clf2.theta
+    
+    np.savetxt(output_path_naive, naive_predictions, delimiter=',')
+    util.plot_posonly(x_test_intercept, t_test, clf, plot_path_naive)
     # *** END CODE HERE ***
     return naive_predictions, clf
 
@@ -135,6 +142,10 @@ def find_alpha_and_plot_correction(clf, valid_path, test_path, output_path_adjus
     # Problem (2f): Apply correction factor using validation set and test on true labels
     # Plot and use np.savetxt to save outputs to output_path_adjusted
     # *** START CODE HERE ***
+    validation_data = np.genfromtxt(valid_path, delimiter=',', skip_header=1)
+    testing_data = np.genfromtxt(test_path, delimiter=',', skip_header=1)
+
+    
     # *** END CODE HERE ***
     return alpha
 
