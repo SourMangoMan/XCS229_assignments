@@ -34,6 +34,11 @@ def apply_logistic_regression(x_train, y_train, x_val, y_val, version):
     theta = None # theta of logreg classifier after fitting to train data
     
     # *** START CODE HERE ***
+    clf = LogisticRegression()
+    clf.fit(x_train, y_train)
+    p_val = clf.predict(x_val)
+    theta = clf.theta
+
     # *** END CODE HERE
 
     if version == 'naive': 
@@ -65,6 +70,20 @@ def calculate_accuracies(p_val, y_val):
     A_1 = A_2 = A_balanced = A = 0
 
     # *** START CODE HERE ***
+    p_val_01 = np.zeros(len(p_val))
+    p_val_01[p_val > 0.5]  = 1
+    p_val_01[p_val <= 0.5] = 0
+
+    true_pos = (p_val_01[(p_val_01 == 1) & (p_val_01 == y_val)]).shape[0]
+    false_pos = (p_val_01[(p_val_01 == 1) & (p_val_01 != y_val)]).shape[0]
+    true_neg = (p_val_01[(p_val_01 == 0) & (p_val_01 == y_val)]).shape[0]
+    false_neg = (p_val_01[(p_val_01 == 0) & (p_val_01 != y_val)]).shape[0]
+
+    A_1 = true_pos/(true_pos + false_neg)
+    A_2 = true_neg/(true_neg + false_pos)
+    A_balanced = 0.5*(A_1 + A_2)
+    A = (true_neg + true_pos)/(true_pos + true_neg + false_pos + false_neg)
+    
     # *** END CODE HERE
 
     return (A_1, A_2, A_balanced, A)
@@ -95,6 +114,24 @@ def upsample_minority_class(x_train, y_train):
     y_train_new = []
 
     # *** START CODE HERE ***
+    rho = np.sum(y_train[y_train == 1])/len(y_train)
+    k = rho / (1 - rho)
+    repetitions = int(np.round(1/k))
+
+    x_positives = np.array(x_train[y_train == 1, :])
+    x_negatives = np.array(x_train[y_train == 0, :])
+
+    x_train_new = x_positives
+    y_train_new = np.ones((x_positives.shape[0],1))
+
+    for i in range(repetitions - 1):
+        x_train_new = np.vstack((x_train_new.copy(), x_positives))
+        y_train_new = np.vstack((y_train_new.copy(), np.ones((x_positives.shape[0],1))))
+    
+    x_train_new = np.vstack((x_train_new.copy(), x_negatives))
+    y_train_new = np.vstack((y_train_new.copy(), np.zeros((x_negatives.shape[0],1))))
+    
+    y_train_new = y_train_new.flatten()
     # *** END CODE HERE
 
     return (x_train_new, y_train_new)
@@ -110,7 +147,7 @@ def upsample_logistic_regression(x_train, y_train, x_val, y_val):
     """
     x_train, y_train = upsample_minority_class(x_train, y_train)
     p_val = apply_logistic_regression(x_train, y_train, x_val, y_val, 'upsampling')
-    _ = calculate_accuracies(p_val, y_val)
+    _ = calculate_accuracies(p_val, y_val)   
 
 def main(train_path, validation_path):
     """Problem 2: Logistic regression for imbalanced labels.
